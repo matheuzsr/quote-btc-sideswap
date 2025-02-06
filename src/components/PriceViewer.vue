@@ -80,10 +80,10 @@ onUnmounted(() => {
 
 <template>
   <div class="price-viewer">
-    <h2>Real-time Price Viewer</h2>
+    <h2>Preços p2p</h2>
     <div class="status">Connection Status: {{ connectionStatus }}</div>
 
-    <div class="prices">
+    <div v-if="prices" class="prices">
       <div class="price-item">
         <span class="label">Cotação:</span>
         <span class="value">1BTC = R$ {{ prices?.ind?.toFixed(2) }}</span>
@@ -93,7 +93,7 @@ onUnmounted(() => {
         <InputMoney v-model="quote" />
       </div>
       <div class="price-item">
-        <span class="label">Recebido com taxa:</span>
+        <span class="label">Recebido com taxa: (3%)</span>
         <div style="display: flex; flex-direction: column; align-items: end">
           <span class="value">R${{ receiptedFiat }}</span>
           <span class="value">{{ receiptedSats }}btc</span>
@@ -107,7 +107,7 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
-    <!-- <div v-else class="loading">Waiting for price data...</div> -->
+    <div v-else class="loading">Waiting for price data...</div>
   </div>
 </template>
 
