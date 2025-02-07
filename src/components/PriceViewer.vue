@@ -80,7 +80,7 @@ onUnmounted(() => {
 
 <template>
   <div class="price-viewer">
-    <h2>Preços p2p</h2>
+    <h2>Cotação peer-to-peer</h2>
     <div class="status">Connection Status: {{ connectionStatus }}</div>
 
     <div v-if="prices" class="prices">
