@@ -4,30 +4,33 @@ import InputMoney from "./InputMoney.vue";
 
 interface PriceData {
   ind: number;
-  last: number;
+  last?: number;
 }
 
 const connectionStatus = ref("Disconnected");
 const prices = ref<PriceData | null>(null);
 const quote = ref(1000);
 const fee = ref(0.03);
-const receiptedFiat = computed(() => {
-  if (!prices.value) return null;
-  return (prices.value.ind / quote.value) * (1 - fee.value);
-});
+
 const paidFiatFee = computed(() => {
   if (!prices.value) return null;
   return (prices.value.ind / quote.value) * (fee.value);
 });
 
+const paidSatsFee = computed(() => {
+  if (!prices.value) return null;
+  return ((quote.value / prices.value.ind) * (fee.value)).toFixed(8);
+});
+
+const receiptedFiat = computed(() => {
+  if (!prices.value) return null;
+  return ((quote.value) - Number(paidFiatFee.value)).toFixed(2);
+});
+
 const receiptedSats = computed(() => {
   if (!prices.value) return null;
 
-  return (quote.value / prices.value.ind) * (1 - fee.value);
-});
-const paidSatsFee = computed(() => {
-  if (!prices.value) return null;
-  return (quote.value / prices.value.ind) * (fee.value);
+  return ((quote.value / prices.value.ind) - Number(paidSatsFee.value)).toFixed(8);
 });
 
 let ws: WebSocket | null = null;
@@ -80,7 +83,7 @@ onUnmounted(() => {
 
 <template>
   <div class="price-viewer">
-    <h2>Cotação peer-to-peer</h2>
+    <h2>Cotação p2p</h2>
     <div class="status">Connection Status: {{ connectionStatus }}</div>
 
     <div v-if="prices" class="prices">
@@ -93,7 +96,7 @@ onUnmounted(() => {
         <InputMoney v-model="quote" />
       </div>
       <div class="price-item">
-        <span class="label">Recebido com taxa: (3%)</span>
+        <span class="label">Recebido(-3%):</span>
         <div style="display: flex; flex-direction: column; align-items: end">
           <span class="value">R${{ receiptedFiat }}</span>
           <span class="value">{{ receiptedSats }}btc</span>
@@ -107,7 +110,7 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
-    <div v-else class="loading">Waiting for price data...</div>
+    <div v-else class="loading">Carregando preços da sideswap...</div>
   </div>
 </template>
 
