@@ -8,7 +8,7 @@ interface PriceData {
 }
 
 const connectionStatus = ref("Disconnected");
-const prices = ref<PriceData | null>({ ind: 559000, last: 0 });
+const prices = ref<PriceData | null>(null);
 const quote = ref(1000);
 const fee = ref(0.03);
 const receiptedFiat = computed(() => {
