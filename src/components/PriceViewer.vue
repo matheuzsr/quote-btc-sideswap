@@ -13,24 +13,25 @@ const quote = ref(1000);
 const fee = ref(0.03);
 
 const paidFiatFee = computed(() => {
-  if (!prices.value) return null;
-  return (prices.value.ind / quote.value) * (fee.value);
+  if (!prices.value) return 0;
+  return quote.value * fee.value;
 });
 
 const paidSatsFee = computed(() => {
-  if (!prices.value) return null;
-  return ((quote.value / prices.value.ind) * (fee.value)).toFixed(8);
+  if (!prices.value) return 0;
+  return (paidFiatFee.value / prices.value.ind).toFixed(8);
 });
 
 const receiptedFiat = computed(() => {
   if (!prices.value) return null;
-  return ((quote.value) - Number(paidFiatFee.value)).toFixed(2);
+  return (quote.value - paidFiatFee.value).toFixed(2);
 });
 
 const receiptedSats = computed(() => {
   if (!prices.value) return null;
 
-  return ((quote.value / prices.value.ind) - Number(paidSatsFee.value)).toFixed(8);
+  const receipted = quote.value / prices.value.ind;
+  return (receipted - Number(paidSatsFee.value)).toFixed(8);
 });
 
 let ws: WebSocket | null = null;
